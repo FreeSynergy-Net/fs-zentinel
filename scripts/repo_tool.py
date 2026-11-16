@@ -100,9 +100,36 @@ def gen_export(mirror, caps, schema):
     return json.dumps(doc, indent=2, ensure_ascii=False) + "\n"
 
 
+def pin_errors(mirror):
+    """Cross-check the pin fields of mirror.toml against each other (tag, commit, artifact names, deb version, signer identity)."""
+    errs = []
+    up, src, ver, bld = (mirror.get(k, {}) for k in ("upstream", "source", "verification", "build"))
+    version, tag, commit = up.get("version"), src.get("tag"), src.get("commit")
+    if version != tag:
+        errs.append(f"pin: [upstream] version {version!r} != [source] tag {tag!r}")
+    ident = f"https://github.com/zentinelproxy/zentinel/.github/workflows/release.yml@refs/tags/{tag}"
+    if ver.get("certificate_identity") != ident:
+        errs.append(f"pin: certificate_identity does not end in @refs/tags/{tag} for the upstream release workflow")
+    if ver.get("certificate_github_workflow_ref") != f"refs/tags/{tag}":
+        errs.append(f"pin: certificate_github_workflow_ref != refs/tags/{tag}")
+    if ver.get("certificate_github_workflow_sha") != commit:
+        errs.append("pin: certificate_github_workflow_sha != [source] commit")
+    if ver.get("certificate_github_workflow_repository") != src.get("repository", "").removeprefix("https://github.com/"):
+        errs.append("pin: certificate_github_workflow_repository != [source] repository")
+    debver = str(version).replace("_", ".") + f"-{bld.get('deb_revision')}"
+    for a in mirror.get("artifact", []):
+        n, k = a.get("name", ""), a.get("kind")
+        if k in ("binary", "sbom", "source") and f"zentinel-{version}-" not in n:
+            errs.append(f"pin: artifact {n} does not carry version {version}")
+        if k == "deb" and not n.startswith(f"zentinel_{debver}_"):
+            errs.append(f"pin: artifact {n} does not match deb version {debver}")
+    return errs
+
+
 def check():
     errs = []
     mirror, caps, schema = load("mirror.toml"), load("capabilities.toml"), load("config/schema.toml")
+    errs += pin_errors(mirror)
     for k in ("name", "version", "license", "homepage"):
         if k not in mirror.get("upstream", {}):
             errs.append(f"mirror.toml: [upstream] {k} missing")
