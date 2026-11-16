@@ -5,7 +5,7 @@ Template, not a production file. No secrets, no real keys. Domains are variables
 | File | What |
 |---|---|
 | `zentinel.kdl.in` | Zentinel configuration: ports 80 (redirect to HTTPS) and 443 (static sites), one ACME HTTP-01 certificate per domain, one document root per domain |
-| `zentinel-dns01-hetzner.kdl.in` | Same with DNS-01 and wildcard certificates through the Hetzner DNS provider. **Does not work today** (see below) |
+| `zentinel-dns01-hetzner.kdl.in` | Same with DNS-01 and wildcard certificates through the Hetzner DNS provider. Needs a Hetzner Cloud API token (Zentinel 26.11_3 or newer, see below) |
 | `www/index.html` | The page, German and English, no external resources |
 | `zentinel-http-only.kdl.in` | Interim configuration for the first start: the three sites over plain HTTP, no TLS |
 | `render-config.sh` | Fills the variables, checks them strictly, optionally copies the page into each document root |
@@ -13,7 +13,7 @@ Template, not a production file. No secrets, no real keys. Domains are variables
 
 ## Monday, step by step (a person does this on server 2)
 
-Why this order: when the first certificate cannot be issued, Zentinel stops at start ("failing fast", `crates/proxy/src/main.rs`, upstream 26.11_2) and serves nothing. With ACME in the configuration it can therefore only be started once the DNS records already point to the server and port 80 is reachable. So the first start uses the plain-HTTP configuration.
+Why this order: when the first certificate cannot be issued, Zentinel stops at start ("failing fast", `crates/proxy/src/main.rs`, upstream 26.11_3) and serves nothing. With ACME in the configuration it can therefore only be started once the DNS records already point to the server and port 80 is reachable. So the first start uses the plain-HTTP configuration.
 
 0. Before anything else: stop the old web server program and check that ports 80 and 443 are free: `ss -tlnp | grep ':80\|:443'` must print nothing (server 2 is reinstalled anyway; this is the control).
 1. Install Zentinel (the `.deb` of this repository or the tarball) and the document roots; render the interim configuration (HTTP only, no TLS):
@@ -48,6 +48,6 @@ Proven in the upstream code and docs, and run locally (`test_serve.sh`): static 
 
 ## Hetzner DNS-01 (wildcards)
 
-Zentinel's `hetzner` provider talks to `https://dns.hetzner.com/api/v1`. Hetzner removed that API on 2026-05-27 (status.hetzner.com, incident c2146c42). The new DNS lives in the Hetzner Console / Cloud API with other tokens and endpoints, which Zentinel 26.11_1 and 26.11_2 do not use. The DNS-01 file therefore only documents the configuration keys. The token would be a file (default `/etc/zentinel/secrets/hetzner-dns-token`, owner `zentinel`, mode `0600`, put there by the person, never in a repository); Zentinel only warns when the mode is looser.
+Since Zentinel 26.11_3 the `hetzner` provider talks to the Hetzner Cloud API (`https://api.hetzner.cloud/v1`); 26.11_1 and 26.11_2 still used the `dns.hetzner.com` API that Hetzner removed on 2026-05-27 (status.hetzner.com, incident c2146c42) and cannot issue. The configuration keys are unchanged, but the token is new: a **Hetzner Cloud** API token with **Read & Write** in the project that holds the zone; old DNS Console tokens do not work. The token is a file (default `/etc/zentinel/secrets/hetzner-dns-token`, owner `zentinel`, mode `0600`, put there by the person, never in a repository); Zentinel only warns when the mode is looser. Checked here: `zentinel test` accepts the rendered file; a real issuance has not been run (do the staging run first).
 
 Language: [Deutsch](README.de.md)

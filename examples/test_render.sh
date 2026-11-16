@@ -26,7 +26,7 @@ if [ -n "${ZENTINEL:-}" ]; then
   # Zentinel insists that the document roots exist; certificates are not needed for the config check (ACME fetches them at start)
   mkdir -p "$t/w/freesynergy.net" "$t/w/helfa.org" "$t/w/freeplanetearth.org"; WEBROOT="$t/w" "$r" --staging "$t/z.kdl" >/dev/null
   WEBROOT="$t/w" "$r" --dns01-hetzner "$t/zd.kdl" >/dev/null
-  "$ZENTINEL" test -c "$t/zd.kdl" >/dev/null 2>&1 && ok "zentinel test accepts the dns-01 variant (syntax only: upstream Hetzner API is gone)" || bad "dns-01 variant refused"
+  "$ZENTINEL" test -c "$t/zd.kdl" >/dev/null 2>&1 && ok "zentinel test accepts the dns-01 variant (syntax only; a real issuance is not run here)" || bad "dns-01 variant refused"
   WEBROOT="$t/w" "$r" --http-only "$t/zh.kdl" >/dev/null
   "$ZENTINEL" test -c "$t/zh.kdl" >/dev/null 2>&1 && ok "zentinel test accepts the http-only variant" || bad "http-only variant refused"
   "$ZENTINEL" test -c "$t/z.kdl" >"$t/zt.log" 2>&1 && ok "zentinel test accepts the rendered configuration" || { bad "zentinel test refuses it"; cat "$t/zt.log"; }

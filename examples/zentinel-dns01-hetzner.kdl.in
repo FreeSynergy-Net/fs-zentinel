@@ -1,7 +1,7 @@
 // Zentinel: three sites with wildcard TLS via ACME DNS-01 and the Hetzner DNS provider.
-// !! DOES NOT WORK TODAY: Zentinel 26.11_1 / 26.11_2 talk to https://dns.hetzner.com/api/v1, which Hetzner removed on 2026-05-27
-// !! (status.hetzner.com incident c2146c42). The file only shows the configuration keys; use zentinel.kdl.in (HTTP-01) until upstream
-// !! supports the new Hetzner DNS API. The token file is NEVER part of a repository: the person puts it on the server, owner zentinel, mode 0600.
+// Needs Zentinel 26.11_3 or newer: from that version the Hetzner provider uses the Hetzner Cloud API (26.11_1 / 26.11_2 talk to the removed dns.hetzner.com API).
+// The token must be a Hetzner Cloud API token with Read & Write in the project that holds the zone; old DNS Console tokens do not work.
+// Syntax checked with `zentinel test`; a real issuance has not been run: do the staging run first. The token file is NEVER part of a repository: the person puts it on the server, owner zentinel, mode 0600.
 // TEMPLATE. Render it with render-config.sh; the upper-case markers between two @ signs are replaced, nothing else. No secrets are needed or stored here.
 // Sources of every setting: examples/README.md (upstream docs: crates/proxy/docs/acme.md, config/examples/acme-san.kdl, kdl-format.md).
 //

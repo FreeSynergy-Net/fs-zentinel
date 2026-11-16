@@ -2,7 +2,7 @@
   "format": 1,
   "repo": "fs-zentinel",
   "program": "Zentinel",
-  "version": "26.11_2",
+  "version": "26.11_3",
   "capabilities": [
     {
       "tag": "gateway.reverse-proxy",

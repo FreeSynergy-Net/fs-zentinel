@@ -4,7 +4,7 @@ git-bug ist in den FreeSynergy-Repos noch nicht eingerichtet (es wird später f�
 
 ## 1. `ca-cert` im KDL half bei einer privaten CA nicht (Zentinel 26.11_1)
 
-> Mit 26.11_2 (gepinnt seit 2026-11-14) nicht neu geprüft. Der Befund unten stammt von 26.11_1.
+> Mit 26.11_3 (gepinnt seit 2026-11-16) nicht neu geprüft; das Änderungsprotokoll von 26.11_3 nennt für die Upstream-TLS-Verbindung keine Änderung (die neuen TLS-Optionen betreffen nur den gRPC-Weg zu Agenten). Der Befund unten stammt von 26.11_1.
 
 - **Geprüft:** Ein Upstream mit `tls { sni "..." ca-cert "/pfad/ca.pem" }` scheiterte weiter mit `invalid peer certificate: UnknownIssuer`, wenn der Upstream (Kanidm 1.12.0) ein Zertifikat einer privaten CA nutzte; das Tor antwortete 502. Mit der Umgebungsvariable `SSL_CERT_FILE=<ca.pem>` am Zentinel-Prozess funktionierte derselbe Aufbau; der lokale Test nutzt diese Variable.
 - **Ungeprüft:** warum. Im Hauptzweig des Herstellers gibt es in `crates/proxy/src/tls.rs` eine Funktion `build_upstream_tls_config`, die `ca_cert` liest; ob sie in 26.11_1 an die echte Upstream-Verbindung angeschlossen ist, haben wir nicht geprüft.
@@ -23,5 +23,12 @@ git-bug ist in den FreeSynergy-Repos noch nicht eingerichtet (es wird später f�
 ## 4. Keine dokumentierte Weiterleitung von HTTP auf HTTPS
 
 - **Geprüft:** Mit `service-type "builtin"` und ohne Handler warnte `zentinel test`, die Route werde als `web` bedient und die Einstellung ignoriert; einen dokumentierten Weiterleitungs-Handler fanden wir nicht. Die Vorlage hat deshalb keinen HTTP-Listener. Siehe [Roadmap](../ROADMAP.md).
+
+## 5. Hetzner DNS-01 (Wildcard-Zertifikate): neue API, neuer Token (ab Zentinel 26.11_3)
+
+- **Laut Hersteller (Änderungsprotokoll und Quelltext von 26.11_3, nicht von uns gegen Hetzner getestet):** Der `hetzner`-Anbieter spricht seit 26.11_3 die Hetzner-Cloud-API (`https://api.hetzner.cloud/v1`, Zonen und RRSets) mit `Authorization: Bearer <Token>`. In 26.11_1 und 26.11_2 sprach er die am 2026-05-27 abgeschaltete `dns.hetzner.com`-API; mit diesen Versionen scheiterte jede DNS-01-Ausstellung. Die Konfiguration bleibt gleich, nur der Token wechselt.
+- **Token:** Ein API-Token der **Hetzner Cloud** mit **Lesen und Schreiben (Read & Write)** im **Projekt, das die Zone enthält** (Hetzner-Konsole, Sicherheit, API-Token). **Alte Tokens der DNS-Konsole funktionieren nicht**; Zentinel meldet dann einen Authentifizierungsfehler mit genau diesem Hinweis. Der Token liegt wie bisher in einer Datei (`credentials-file`, Besitzer `zentinel`, Modus `0600`, vom Menschen angelegt, nie in einem Repository).
+- **Geprüft von uns:** nur die Syntax: `zentinel test -c` akzeptiert die gerenderte DNS-01-Vorlage (`examples/zentinel-dns01-hetzner.kdl.in`) mit dem 26.11_3-Programm. **Nicht geprüft:** eine echte Ausstellung gegen Hetzner und Let's Encrypt; der Probelauf mit der Staging-CA (Schritt 3 in `examples/README.md`) ist der Beleg.
+- **Entscheidung:** Ein eigener Webhook-Adapter für Hetzner-DNS ist nicht nötig: Zentinel 26.11_3 unterstützt Hetzner selbst. Die Vorlage bleibt Vorlage; HTTP-01 bleibt der Weg für die erste Inbetriebnahme.
 
 Sprache: [English](../en/known-limits.md)

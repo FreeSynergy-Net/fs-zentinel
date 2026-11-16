@@ -6,14 +6,14 @@ Vorlage, keine fertige Produktionsdatei. Keine Geheimnisse, keine echten Schlüs
 |---|---|
 | `zentinel.kdl.in` | Zentinel-Konfiguration: Port 80 (Weiterleitung auf HTTPS) und 443 (statische Seiten), je Domain ein ACME-HTTP-01-Zertifikat, je Domain ein eigenes Wurzelverzeichnis |
 | `zentinel-http-only.kdl.in` | Übergangskonfiguration für den ersten Start: die drei Seiten über reines HTTP, ohne TLS |
-| `zentinel-dns01-hetzner.kdl.in` | Dasselbe mit DNS-01 und Wildcard-Zertifikaten über den Hetzner-DNS-Anbieter. **Funktioniert heute nicht** (siehe unten) |
+| `zentinel-dns01-hetzner.kdl.in` | Dasselbe mit DNS-01 und Wildcard-Zertifikaten über den Hetzner-DNS-Anbieter. Braucht einen Hetzner-Cloud-API-Token (Zentinel 26.11_3 oder neuer, siehe unten) |
 | `www/index.html` | Die Seite, deutsch und englisch, ohne externe Ressourcen |
 | `render-config.sh` | Setzt die Variablen ein, prüft sie streng, kopiert auf Wunsch die Seite in jedes Wurzelverzeichnis |
 | `test_render.sh`, `test_serve.sh` | Selbsttests (`ZENTINEL=/Pfad/zu/zentinel` führt zusätzlich `zentinel test` und einen lokalen Auslieferungs- und Weiterleitungstest aus) |
 
 ## Montag, Schritt für Schritt (ein Mensch führt das auf Server 2 aus)
 
-Warum diese Reihenfolge: Kann das erste Zertifikat nicht ausgestellt werden, bricht Zentinel beim Start ab ("failing fast", `crates/proxy/src/main.rs`, Upstream 26.11_2) und liefert nichts aus. Mit ACME in der Konfiguration lässt es sich also erst starten, wenn die DNS-Einträge schon auf den Server zeigen und Port 80 erreichbar ist. Der erste Start nutzt deshalb die Konfiguration nur mit HTTP.
+Warum diese Reihenfolge: Kann das erste Zertifikat nicht ausgestellt werden, bricht Zentinel beim Start ab ("failing fast", `crates/proxy/src/main.rs`, Upstream 26.11_3) und liefert nichts aus. Mit ACME in der Konfiguration lässt es sich also erst starten, wenn die DNS-Einträge schon auf den Server zeigen und Port 80 erreichbar ist. Der erste Start nutzt deshalb die Konfiguration nur mit HTTP.
 
 0. Vor allem anderen: das alte Webserver-Programm stoppen und prüfen, dass die Ports 80 und 443 frei sind: `ss -tlnp | grep ':80\|:443'` darf nichts ausgeben (Server 2 wird zwar neu installiert, dies ist die Kontrolle).
 1. Zentinel installieren (das `.deb` dieses Repositories oder den Tarball), Wurzelverzeichnisse anlegen, die Übergangskonfiguration (nur HTTP, kein TLS) erzeugen:
@@ -48,6 +48,6 @@ Belegt im Upstream-Code und in der Doku, und lokal gelaufen (`test_serve.sh`): s
 
 ## Hetzner DNS-01 (Wildcards)
 
-Der `hetzner`-Anbieter von Zentinel spricht `https://dns.hetzner.com/api/v1`. Hetzner hat diese API am 2026-05-27 entfernt (status.hetzner.com, Incident c2146c42). Die neue DNS-Verwaltung liegt in der Hetzner-Konsole mit anderen Token und Endpunkten, die Zentinel 26.11_1 und 26.11_2 nicht benutzen. Die DNS-01-Datei zeigt deshalb nur die Konfigurationsschlüssel. Der Token wäre eine Datei (Standard `/etc/zentinel/secrets/hetzner-dns-token`, Besitzer `zentinel`, Modus `0600`, vom Menschen angelegt, nie in einem Repository); Zentinel warnt nur bei zu offenem Modus.
+Seit Zentinel 26.11_3 spricht der `hetzner`-Anbieter die Hetzner-Cloud-API (`https://api.hetzner.cloud/v1`); 26.11_1 und 26.11_2 benutzten noch die `dns.hetzner.com`-API, die Hetzner am 2026-05-27 entfernt hat (status.hetzner.com, Incident c2146c42), und können nichts ausstellen. Die Konfigurationsschlüssel bleiben gleich, aber der Token ist neu: ein API-Token der **Hetzner Cloud** mit **Lesen und Schreiben** im Projekt, das die Zone enthält; alte Tokens der DNS-Konsole funktionieren nicht. Der Token ist eine Datei (Standard `/etc/zentinel/secrets/hetzner-dns-token`, Besitzer `zentinel`, Modus `0600`, vom Menschen angelegt, nie in einem Repository); Zentinel warnt nur bei zu offenem Modus. Hier geprüft: `zentinel test` akzeptiert die gerenderte Datei; eine echte Ausstellung wurde nicht gefahren (zuerst der Staging-Lauf).
 
 Sprache: [English](README.md)
