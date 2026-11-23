@@ -179,13 +179,13 @@ jobs:
         with:
           name: zentinel-unsigned
           path: dist
-      - uses: FreeSynergy/fs-release/actions/sign-files@30de3cd12b89c12cfbf33cfc7bbe0ffab11d8f6c # fs-release main 30de3cd (contains sign-cleanup ef7dfa0) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
+      - uses: FreeSynergy-Net/fs-release/actions/sign-files@485f74732ddb90965fafcfa37b6a4f6b473dcc6b # fs-release main 30de3cd (contains sign-cleanup ef7dfa0) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
         with:
           mode: packages
           private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
-      - uses: FreeSynergy/fs-release/actions/checksums@30de3cd12b89c12cfbf33cfc7bbe0ffab11d8f6c # fs-release main 30de3cd (contains sign-cleanup ef7dfa0) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
-      - uses: FreeSynergy/fs-release/actions/sign-files@30de3cd12b89c12cfbf33cfc7bbe0ffab11d8f6c # fs-release main 30de3cd (contains sign-cleanup ef7dfa0) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
+      - uses: FreeSynergy-Net/fs-release/actions/checksums@485f74732ddb90965fafcfa37b6a4f6b473dcc6b # fs-release main 30de3cd (contains sign-cleanup ef7dfa0) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
+      - uses: FreeSynergy-Net/fs-release/actions/sign-files@485f74732ddb90965fafcfa37b6a4f6b473dcc6b # fs-release main 30de3cd (contains sign-cleanup ef7dfa0) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
         with:
           mode: detached
           private-key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -206,7 +206,7 @@ jobs:
           path: dist
           retention-days: 3
       - if: ${{ inputs.draft_release }}
-        uses: FreeSynergy/fs-release/actions/draft-release@30de3cd12b89c12cfbf33cfc7bbe0ffab11d8f6c # fs-release main 30de3cd (contains sign-cleanup ef7dfa0) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
+        uses: FreeSynergy-Net/fs-release/actions/draft-release@485f74732ddb90965fafcfa37b6a4f6b473dcc6b # fs-release main 30de3cd (contains sign-cleanup ef7dfa0) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
         with:
           tag: v${{ steps.pin.outputs.version }}
           name: Zentinel
