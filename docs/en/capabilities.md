@@ -1,6 +1,6 @@
 # Capabilities
 
-Capability tags for the FreeSynergy catalog (ADR 0068). `provides` = offers it, `requires` = needs it, `recommends` = can use it. Support is `yes`, `no` or `unstable`; every `yes` and `unstable` cites the upstream source. Generated from `capabilities.toml`; checked on version Zentinel 26.11_6 (2026-11-16).
+Capability tags for the FreeSynergy catalog (ADR 0068). `provides` = offers it, `requires` = needs it, `recommends` = can use it. Support is `yes`, `no` or `unstable`; every `yes` and `unstable` cites the upstream source. Generated from `capabilities.toml`; checked on version Zentinel 26.11_6 (2026-11-23).
 
 | Tag | Relation | Support | Meaning | Source |
 |---|---|---|---|---|

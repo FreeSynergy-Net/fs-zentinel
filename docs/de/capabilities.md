@@ -1,6 +1,6 @@
 # Fähigkeiten
 
-Fähigkeiten-Tags für den FreeSynergy-Katalog (ADR 0068). `provides` = bietet an, `requires` = braucht, `recommends` = kann nutzen. Unterstützung ist `yes`, `no` oder `unstable` (ja, nein, instabil); jedes `yes` und `unstable` nennt die Quelle beim Hersteller. Erzeugt aus `capabilities.toml`; geprüft für Version Zentinel 26.11_6 (2026-11-16).
+Fähigkeiten-Tags für den FreeSynergy-Katalog (ADR 0068). `provides` = bietet an, `requires` = braucht, `recommends` = kann nutzen. Unterstützung ist `yes`, `no` oder `unstable` (ja, nein, instabil); jedes `yes` und `unstable` nennt die Quelle beim Hersteller. Erzeugt aus `capabilities.toml`; geprüft für Version Zentinel 26.11_6 (2026-11-23).
 
 | Tag | Beziehung | Unterstützung | Bedeutung | Quelle |
 |---|---|---|---|---|

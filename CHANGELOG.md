@@ -4,9 +4,10 @@ Changes of the FreeSynergy mirror of Zentinel (not of Zentinel itself; see upstr
 
 ## v26.11_6 (pinned 2026-11-23)
 
-- Pin raised from upstream `26.11_3` to `26.11_6` in one step (commit `a4e4e803dea5fe6c7a0cd9d5cd4f09d421cbecad`, annotated tag object `89ddb91f5b0088af90d4fe1331c11e51fc55ca19`, released 2026-11-23). Signer identity: `release.yml@refs/tags/26.11_6` (certificate of the linux-amd64 bundle checked; Sigstore chain and Rekor entry not checked by us).
+- Pin raised from upstream `26.11_3` to `26.11_6` in one step (commit `a4e4e803dea5fe6c7a0cd9d5cd4f09d421cbecad`, annotated tag object `89ddb91f5b0088af90d4fe1331c11e51fc55ca19`, released 2026-11-23). Signer identity: `release.yml@refs/tags/26.11_6` (certificate of the linux-amd64 bundle checked; Sigstore chain and Rekor entry not checked by us locally; `cosign verify-blob --bundle` checks them in the mirror run (CI), not on a developer machine).
 - Security, upstream 26.11_4 (in this pin): request bodies with a non-visible-ASCII byte in `Content-Type` are inspected (they bypassed body agents under a `waf` block); forwarding headers from untrusted peers are removed; release signatures are checked against the exact signer identity; `bundle install` and `install.sh` refuse an archive whose checksum does not match. Severity and advisory id: not stated in upstream's changelog (not proven).
 - Configuration: upstream 26.11_5 makes `zentinel test --strict` reject `logging { level, format }` (ignored settings). Removed from the three templates in `examples/`, replaced by a comment. `--strict` on the rendered templates with 26.11_6: rc 0 (container, no network).
+- Also in this pin, upstream 26.11_5, see its changelog: RUSTSEC-2026-0592 (`url`, upstream #817), more forwarding headers from untrusted peers removed (#803), POST retries only with `retry-non-idempotent`, a TLS listener with a missing certificate file stops the start. The shipped upstream unit has `StartLimitIntervalSec=0` (unlimited restarts) and `RestartSteps`/`RestartMaxDelaySec` (systemd older than 254 reports "Unknown key name"); not tested under systemd.
 - Debian packages: `zentinel_26.11.6-1_{amd64,arm64}.deb`, to be built only by CI from the reviewed commit. Hetzner DNS-01: template only, see known-limits.
 
 ## v26.11_3 (not released yet)
