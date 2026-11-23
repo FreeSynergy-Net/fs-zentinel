@@ -2,6 +2,13 @@
 
 Changes of the FreeSynergy mirror of Zentinel (not of Zentinel itself; see upstream's CHANGELOG for that). The mirror tag is `v` plus the upstream version.
 
+## v26.11_6 (pinned 2026-11-23)
+
+- Pin raised from upstream `26.11_3` to `26.11_6` in one step (commit `a4e4e803dea5fe6c7a0cd9d5cd4f09d421cbecad`, annotated tag object `89ddb91f5b0088af90d4fe1331c11e51fc55ca19`, released 2026-11-23). Signer identity: `release.yml@refs/tags/26.11_6` (certificate of the linux-amd64 bundle checked; Sigstore chain and Rekor entry not checked by us).
+- Security, upstream 26.11_4 (in this pin): request bodies with a non-visible-ASCII byte in `Content-Type` are inspected (they bypassed body agents under a `waf` block); forwarding headers from untrusted peers are removed; release signatures are checked against the exact signer identity; `bundle install` and `install.sh` refuse an archive whose checksum does not match. Severity and advisory id: not stated in upstream's changelog (not proven).
+- Configuration: upstream 26.11_5 makes `zentinel test --strict` reject `logging { level, format }` (ignored settings). Removed from the three templates in `examples/`, replaced by a comment. `--strict` on the rendered templates with 26.11_6: rc 0 (container, no network).
+- Debian packages: `zentinel_26.11.6-1_{amd64,arm64}.deb`, to be built only by CI from the reviewed commit. Hetzner DNS-01: template only, see known-limits.
+
 ## v26.11_3 (not released yet)
 
 - Pin raised from upstream `26.11_2` to `26.11_3` (commit `2bf39089035e7e77e8d3c1767f98453b09fe4a2a`, annotated tag object `38e7c2b4ef6c72fb7639f2d26999d542ad8ead8f`, released 2026-11-14). Signer identity, workflow SHA and ref in `mirror.toml` read from the maker's 26.11_3 certificate.

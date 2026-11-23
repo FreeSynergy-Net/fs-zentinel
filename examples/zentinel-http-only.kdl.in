@@ -69,8 +69,6 @@ limits {
 }
 
 observability {
-    logging {
-        level "info"
-        format "json"
-    }
+    // Logging: the proxy's own log level comes from RUST_LOG and its log is text (26.11_5 --strict rejects
+    // level/format here as ignored settings). The access log is not configured in this template.
 }
