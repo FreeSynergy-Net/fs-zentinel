@@ -179,13 +179,13 @@ jobs:
         with:
           name: zentinel-unsigned
           path: dist
-      - uses: FreeSynergy-Net/fs-release/actions/sign-files@9eed5c95eb7311f2b68266a012ec778f51e3ac38 # v0.0.18 (9eed5c9) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
+      - uses: FreeSynergy-Net/fs-release/actions/sign-files@7cfb2298bd4bcdb13f92c3651bfc8377fc30c7ed # v0.0.18 (9eed5c9) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
         with:
           mode: packages
           private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
-      - uses: FreeSynergy-Net/fs-release/actions/checksums@9eed5c95eb7311f2b68266a012ec778f51e3ac38 # v0.0.18 (9eed5c9) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
-      - uses: FreeSynergy-Net/fs-release/actions/sign-files@9eed5c95eb7311f2b68266a012ec778f51e3ac38 # v0.0.18 (9eed5c9) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
+      - uses: FreeSynergy-Net/fs-release/actions/checksums@7cfb2298bd4bcdb13f92c3651bfc8377fc30c7ed # v0.0.18 (9eed5c9) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
+      - uses: FreeSynergy-Net/fs-release/actions/sign-files@7cfb2298bd4bcdb13f92c3651bfc8377fc30c7ed # v0.0.18 (9eed5c9) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
         with:
           mode: detached
           private-key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -206,7 +206,7 @@ jobs:
           path: dist
           retention-days: 3
       - if: ${{ inputs.draft_release }}
-        uses: FreeSynergy-Net/fs-release/actions/draft-release@9eed5c95eb7311f2b68266a012ec778f51e3ac38 # v0.0.18 (9eed5c9) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
+        uses: FreeSynergy-Net/fs-release/actions/draft-release@7cfb2298bd4bcdb13f92c3651bfc8377fc30c7ed # v0.0.18 (9eed5c9) (pinned: these actions run next to the signing key). Update: review the fs-release diff, then bump this SHA in all three mirror repos.
         with:
           tag: v${{ steps.pin.outputs.version }}
           name: Zentinel
